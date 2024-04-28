@@ -14,12 +14,12 @@ async def main() -> None:
 
         if seconds_elapsed == 5:
             long_task.cancel()
-    
+
     try:
         await long_task
     except asyncio.exceptions.CancelledError:
         print("Our task was cancelled")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main=main())
