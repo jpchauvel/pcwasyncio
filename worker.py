@@ -30,9 +30,9 @@ async def worker(
         response: HTTPResponse = await loop.run_in_executor(
             None, urllib.request.urlopen, url
         )
-        queue.task_done()
         if callback is not None:
             await callback(url, response.read().decode("utf-8"))
+        queue.task_done()
 
 
 async def main() -> None:
