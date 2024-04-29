@@ -1,19 +1,28 @@
 #!/usr/bin/env python3
 import asyncio
 import urllib.request
-from typing import Callable, Optional
 from http.client import HTTPResponse
+from typing import Awaitable, Callable, Optional
+
+import aiofiles
 
 
-def callback(url: str, response: str) -> None:
-    print("=================URL======================")
-    print(url)
-    print("=================Response=================")
-    print(response)
+async def callback(url: str, response: str) -> None:
+    async with aiofiles.open("responses.txt", "a", encoding="utf-8") as fd:
+        await fd.write(
+            f"""
+=====================URL==========================
+{url}
+=====================Response=====================
+{response}
+
+"""
+        )
 
 
 async def worker(
-    queue: asyncio.Queue, callback: Optional[Callable[[str, str], None]] = None
+    queue: asyncio.Queue,
+    callback: Optional[Callable[[str, str], Awaitable[None]]] = None,
 ) -> None:
     while True:
         url: str = await queue.get()
@@ -23,13 +32,12 @@ async def worker(
         )
         queue.task_done()
         if callback is not None:
-            callback(url, response.read().decode("utf-8"))
+            await callback(url, response.read().decode("utf-8"))
 
 
 async def main() -> None:
     queue: asyncio.Queue[str] = asyncio.Queue()
     for i in range(10):
-        queue.put_nowait("https://python.org")
         queue.put_nowait("https://python.pe")
 
     tasks: list[asyncio.Task[None]] = []

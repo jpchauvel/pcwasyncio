@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from asyncio import Future
 
-
 if __name__ == "__main__":
     my_future: Future[int] = Future()
     print(f"Is my future done? {my_future.done()}")
