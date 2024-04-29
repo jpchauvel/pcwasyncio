@@ -1,6 +1,8 @@
 import asyncio
+from util.async_timer import async_timed
 
 
+@async_timed()
 async def delay(delay_seconds: int) -> int:
     print(f"sleeping for {delay_seconds} seconds(s)")
     await asyncio.sleep(delay=delay_seconds)
