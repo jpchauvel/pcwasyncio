@@ -15,5 +15,7 @@ def async_timed() -> Callable:
                 end = time.time()
                 total = end - start
                 print(f"finished {func} in {total:.4f} second(s)")
+
         return wrapped
+
     return wrapper
