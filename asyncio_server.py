@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
 import asyncio
+import logging
 import socket
 from asyncio import AbstractEventLoop
 
 
 async def echo(connection: socket.socket, loop: AbstractEventLoop) -> None:
-    while data := await loop.sock_recv(connection, 1024):
-        await loop.sock_sendall(connection, data)
+    try:
+        while data := await loop.sock_recv(connection, 1024):
+            if data == b"boom\r\n":
+                raise Exception("Unexpected network error")
+            await loop.sock_sendall(connection, data)
+    except Exception as err:
+        logging.exception(err)
+    finally:
+        connection.close()
 
 
 async def listen_for_connection(server_socket: socket.socket, loop: AbstractEventLoop) -> None:
