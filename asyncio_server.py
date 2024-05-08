@@ -26,12 +26,16 @@ async def echo(connection: socket.socket, loop: AbstractEventLoop) -> None:
         connection.close()
 
 
-async def connection_listener(server_socket: socket.socket, loop: AbstractEventLoop) -> None:
+async def connection_listener(
+    server_socket: socket.socket, loop: AbstractEventLoop
+) -> None:
     while True:
         connection, address = await loop.sock_accept(server_socket)
         connection.setblocking(False)
         print(f"Got a connection from {address}")
-        echo_task: asyncio.Task[None] = asyncio.create_task(echo(connection, loop))
+        echo_task: asyncio.Task[None] = asyncio.create_task(
+            echo(connection, loop)
+        )
         echo_tasks.append(echo_task)
 
 
