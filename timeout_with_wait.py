@@ -10,11 +10,13 @@ from util import async_timed, fetch_status
 async def main() -> None:
     async with ClientSession() as session:
         url = "https://example.com"
-        fetchers : set[asyncio.Task[int]] = set([ 
-            asyncio.create_task(fetch_status(session, url)),
-            asyncio.create_task(fetch_status(session, url)),
-            asyncio.create_task(fetch_status(session, url, 3)),
-        ])
+        fetchers: set[asyncio.Task[int]] = set(
+            [
+                asyncio.create_task(fetch_status(session, url)),
+                asyncio.create_task(fetch_status(session, url)),
+                asyncio.create_task(fetch_status(session, url, 3)),
+            ]
+        )
         done, pending = await asyncio.wait(fetchers, timeout=1)
 
         print(f"Done task count: {len(done)}")
